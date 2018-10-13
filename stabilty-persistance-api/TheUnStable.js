@@ -10,6 +10,8 @@ const TheUnstableSchema = new Schema({
   lastName: String,
   email: String,
   phoneNumber: String,
+  ethnicity: String,
+  country: String,
   skills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }]
 });
 

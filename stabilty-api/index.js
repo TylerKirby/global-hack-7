@@ -129,6 +129,8 @@ const typeDefs = gql`
      lastName: String
      phoneNumber: String
      email: String
+     ethnicity: String
+     country: String
      skills: [Skill]
   }
   
@@ -145,6 +147,8 @@ const typeDefs = gql`
      lastName: String
      phoneNumber: String
      email: String
+     ethnicity: String
+     country: String
      skills: [SkillInput]
   }
   
