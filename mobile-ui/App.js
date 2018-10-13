@@ -4,6 +4,8 @@ import {
   Container, Header, Content, Button, Text,
 } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 
 import CommunityScreen from './screens/CommunityScreen';
 import HealthScreen from './screens/HealthScreen';
@@ -19,9 +21,17 @@ const styles = StyleSheet.create({
   },
 });
 
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+});
+
 export default class App extends React.Component {
   render() {
-    return <RootStack />;
+    return (
+      <ApolloProvider client={client}>
+        <RootStack />
+      </ApolloProvider>
+    );
   }
 }
 
@@ -42,6 +52,7 @@ const RootStack = createStackNavigator(
     SkillsScreen: {
       screen: SkillsScreen,
     },
+
   },
   {
     initialRouteName: 'Dashboard',

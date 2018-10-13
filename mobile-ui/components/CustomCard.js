@@ -1,8 +1,12 @@
 import React from 'react';
 import { Image } from 'react-native';
-import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right } from 'native-base';
+import {
+  Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right,
+} from 'native-base';
 
-const CustomCard = ({ title, type, imageUri, description, phoneNumber }) => (
+const CustomCard = ({
+  title, type, imageUri, description, phoneNumber,
+}) => (
   <Card>
     <CardItem header>
       <Left>
@@ -20,7 +24,7 @@ const CustomCard = ({ title, type, imageUri, description, phoneNumber }) => (
     <CardItem>
       <Left>
         <Button transparent>
-          <Icon name="ios-call"/>
+          <Icon name="ios-call" />
           <Text>{phoneNumber}</Text>
         </Button>
       </Left>
