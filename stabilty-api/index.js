@@ -1,9 +1,11 @@
-const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-server');
+const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-server-express');
 const {find, filter} = require('lodash');
 const {MoviesAPI} = require('./MoviesAPI');
 const {EmploymentAPI} = require('./EmploymentAPI');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
+const express = require('express');
 
 const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/data/countries.json'), 'utf8'));
 // This is a (sample) collection of books we'll be able to query
@@ -188,24 +190,24 @@ const mocks = {
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
-    countryToId: ()=> saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
+    countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
 
 const resolvers = {
   Mutation: {
-    addAnUnstable: (anUnstable)=> ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)}),
+    addAnUnstable: (anUnstable) => ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)}),
     contactAnUnstable: unstableId => unstableId,
   },
   Query: {
     author(root, args, context, info) {
       return find(authors, {id: args.id});
     },
-    movie: async (_source, { id }, { dataSources }) => {
+    movie: async (_source, {id}, {dataSources}) => {
       return dataSources.moviesAPI.getMovie(id);
     },
-    countriesThatStartWith(root, {prefix}, context, info){
+    countriesThatStartWith(root, {prefix}, context, info) {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
@@ -230,7 +232,7 @@ const resolvers = {
 // In the most basic sense, the ApolloServer can be started
 // by passing type definitions (typeDefs) and the resolvers
 // responsible for fetching the data for those types.
-const server = new ApolloServer({
+const apollo = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => ({
@@ -239,11 +241,20 @@ const server = new ApolloServer({
   }),
   mocks,
   mockEntireSchema: false,
-
 });
+
+const app = express();
+apollo.applyMiddleware({app});
+
+const httpsServer = https.createServer({
+  key: fs.readFileSync(path.resolve(__dirname, '../config/key.pem'), 'utf8'),
+  cert: fs.readFileSync(path.resolve(__dirname, '../config/certificate.pem'), 'utf8'),
+}, app);
 
 // This `listen` method launches a web-server.  Existing apps
 // can utilize middleware options, which we'll discuss later.
-server.listen().then(({url}) => {
-  console.log(`🚀  Server ready at ${url}`);
+httpsServer.listen({port: 4000},() => {
+  console.log(`🚀  Server ready at https://localhost:4000`);
 });
+
+apollo.installSubscriptionHandlers(httpsServer);
