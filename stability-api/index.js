@@ -1,7 +1,10 @@
 const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-server');
 const {find, filter} = require('lodash');
 const {MoviesAPI} = require('./MoviesAPI');
+const fs = require('fs');
+const path = require('path');
 
+const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/data/countries.json'), 'utf8'));
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
 // from an existing data source like a REST API or database.
@@ -89,11 +92,15 @@ const typeDefs = gql`
     name: String
     age: Int
   }
+  
+  type Country {
+    name: String
+  }
 
   type Query {
     author: Author
     people: [Person]
-    readError: String
+    countriesThatStartWith(prefix: String): [Country]
     movie(id: Int): Movie
     authenticationError: String
     getAuthor(id: Int): Author
@@ -116,8 +123,9 @@ const resolvers = {
     movie: async (_source, { id }, { dataSources }) => {
       return dataSources.moviesAPI.getMovie(id);
     },
-    readError: (parent, args, context) => {
-      fs.readFileSync('/does/not/exist');
+    countriesThatStartWith(root, {prefix}, context, info){
+      const prefixLowerCase = prefix.toLowerCase();
+      return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
     authenticationError: (parent, args, context) => {
       throw new AuthenticationError('must authenticate');
