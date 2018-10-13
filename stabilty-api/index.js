@@ -100,7 +100,8 @@ const typeDefs = gql`
   
   type EmploymentOpportunity {
      name: String
-     id: Int
+     _id: Int
+     stabilityId: String # The suggestion id
      description: String
      imageUrl: String
      type: String
@@ -108,7 +109,8 @@ const typeDefs = gql`
   
   type StabilityOption {
      name: String
-     id: Int
+     _id: Int
+     stabilityId: String # The suggestion id
      type: String
      description: String
      imageUrl: String
@@ -117,6 +119,10 @@ const typeDefs = gql`
   type Query {
     author: Author
     people: [Person]
+    
+    #ID in this case is the thing that we will use to build suggestions to customize the user experience 
+    countryToId(country: String): String
+    
     employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
     skillOpportunitiesForId(id: Int): [EmploymentOpportunity]
     healthOpportunitiesForId(id: Int): [EmploymentOpportunity]
@@ -130,6 +136,9 @@ const typeDefs = gql`
   
 `;
 
+const saltedMd5 = require('salted-md5');
+const salt = process.env.SO_SALTY || 'All these flavors, and you chose to be salty';
+
 const mocks = {
   Query: () => ({
     people: () => new MockList([0, 12]),
@@ -138,6 +147,7 @@ const mocks = {
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
+    countryToId: ()=> saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
