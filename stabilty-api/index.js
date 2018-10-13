@@ -191,7 +191,7 @@ const mocks = {
 
 const resolvers = {
   Mutation: {
-    addAnUnstable: ({anUnstable})=> anUnstable
+    addAnUnstable: (anUnstable)=> ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)})
   },
   Query: {
     author(root, args, context, info) {
