@@ -1,6 +1,7 @@
 const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-server');
 const {find, filter} = require('lodash');
 const {MoviesAPI} = require('./MoviesAPI');
+const {EmploymentAPI} = require('./EmploymentAPI');
 const fs = require('fs');
 const path = require('path');
 
@@ -96,10 +97,19 @@ const typeDefs = gql`
   type Country {
     name: String
   }
+  
+  type Opportunity {
+     name: String
+     id: Int
+     description: String
+     imageUrl: String
+     type: String
+  }
 
   type Query {
     author: Author
     people: [Person]
+    opportunitiesForId(id: Int): [Opportunity]
     countriesThatStartWith(prefix: String): [Country]
     movie(id: Int): Movie
     authenticationError: String
@@ -111,6 +121,7 @@ const typeDefs = gql`
 const mocks = {
   Query: () => ({
     people: () => new MockList([0, 12]),
+    opportunitiesForId: () => new MockList([0, 24]),
   }),
   String: () => `I am a mock: ${Math.ceil(100 * Math.random())}`,
 };
@@ -127,6 +138,10 @@ const resolvers = {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
+    // opportunitiesForId(root, {id}, context, info){
+    //   const prefixLowerCase = id.toLowerCase();
+    //   return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
+    // },
     authenticationError: (parent, args, context) => {
       throw new AuthenticationError('must authenticate');
     },
@@ -149,6 +164,7 @@ const server = new ApolloServer({
   resolvers,
   dataSources: () => ({
     moviesAPI: new MoviesAPI(),
+    employmentAPI: new EmploymentAPI(),
   }),
   mocks,
   mockEntireSchema: false,
