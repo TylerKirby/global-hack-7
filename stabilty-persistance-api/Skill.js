@@ -5,8 +5,8 @@ const Schema = mongoose.Schema;
 
 //This is what I am calling the immigrant at the moment.
 const SkillSchema = new Schema({
-  _id: Number,
-  _owner: { type: Number, ref: 'TheUnStable' },
+  _id: String,
+  _owner: { type: String, ref: 'TheUnStable' },
   name: String,
   proficiency: String,
 });

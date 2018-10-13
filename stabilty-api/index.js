@@ -115,6 +115,43 @@ const typeDefs = gql`
      description: String
      imageUrl: String
   }
+  
+  type Skill {
+    id: String!
+    name: String
+    proficiency: String
+  }
+  
+  type TheUnstable {
+     id: String!
+     stabilityId: String
+     firstName: String
+     lastName: String
+     phoneNumber: String
+     email: String
+     skills: [Skill]
+  }
+  
+  
+  input SkillInput {
+    id: String!
+    name: String
+    proficiency: String
+  }
+  
+  input TheUnstableInput {
+     id: String!
+     firstName: String
+     lastName: String
+     phoneNumber: String
+     email: String
+     skills: [SkillInput]
+  }
+  
+  type Mutation {
+    #todo should make an actual type
+    addAnUnstable(anUnstable: TheUnstableInput!): TheUnstable!
+  }
 
   type Query {
     author: Author
@@ -153,6 +190,9 @@ const mocks = {
 };
 
 const resolvers = {
+  Mutation: {
+    addAnUnstable: ({anUnstable})=> anUnstable
+  },
   Query: {
     author(root, args, context, info) {
       return find(authors, {id: args.id});
