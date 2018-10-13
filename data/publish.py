@@ -1,34 +1,113 @@
 #!/usr/bin/python
 
+import copy
 import json
+import time
 from pymongo import MongoClient
+from elasticsearch import Elasticsearch
 
+MONGO_URL = 'mongodb://mongo:27017/'
+ELASTIC_URL = 'http://elastic:9200'
+
+
+class Mongo:
+    def __init__(self, db):
+        while True:
+            try:
+                self.client = MongoClient(MONGO_URL)
+                self.client.server_info()
+                break
+            except:
+                print('waiting for mongo')
+                time.sleep(5)
+
+        self.db = self.client[db]
+
+    def close(self):
+        self.client.close()
+
+    def add_all(self, name, docs):
+        if name in self.db.list_collection_names():
+            print('collection %s already exists' % name)
+            return
+
+        print('adding documents to %s' % name)
+        collection = self.db[name]
+        collection.insert_many(docs)
+
+
+class Elastic:
+    def __init__(self):
+        while True:
+            try:
+                self.client = Elasticsearch([ELASTIC_URL])
+                self.client.ping()
+                break
+            except:
+                print('waiting for elastic')
+                time.sleep(5)
+
+        self.add_user_mapping()
+
+    def add_all(self, index, doc_type, docs):
+        if self.client.indices.exists(index=index) and not self.is_new:
+            print('index %s already exists' % index)
+            return
+
+        print('adding documents to %s' % index)
+        for doc in docs:
+            self.client.index(index, doc_type, doc)
+
+    def add_user_mapping(self):
+        # need a custom mapping for postcode to keep it from casting to long
+        mapping = \
+            {
+                "mappings": {
+                    "users": {
+                        "properties": {
+                            "location": {
+                                "properties": {
+                                    "postcode": {
+                                        "type": "text"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        res = self.client.indices.create(index='stabilty_users', ignore=400, body=mapping)
+        self.is_new = 'error' not in res
+
+mongo = Mongo('stability')
+elastic = Elastic()
+
+#
+# countries
+#
+#
 with open('randomuser/countries.json') as fp:
     countries = json.loads(fp.read())
+    mongo.add_all('countries', copy.deepcopy(countries))
+    elastic.add_all('stabilty_countries', 'countries', countries)
+
+#
+# users
+#
 
 with open('randomuser/users.json') as fp:
     users = json.loads(fp.read())
+    mongo.add_all('users', copy.deepcopy(users))
+    elastic.add_all('stabilty_users', 'users', users)
+
+#
+# orgs
+#
 
 with open('naa/orgs.json') as fp:
     orgs = json.loads(fp.read())
+    mongo.add_all('orgs', copy.deepcopy(orgs))
+    elastic.add_all('stabilty_orgs', 'orgs', orgs)
 
-while True:
-    try:
-        client = MongoClient('mongodb://mongo:27017/')
-        client.server_info()
-        break
-    except Exception as e:
-        print('waiting for mongo')
-
-stability_db = client["stability"]
-
-users_coll = stability_db["users"]
-result = users_coll.insert_many(users)
-
-countries_coll = stability_db["countries"]
-result = countries_coll.insert_many(countries)
-
-orgs_coll = stability_db["orgs"]
-result = orgs_coll.insert_many(orgs)
-
-client.close()
+mongo.close()
