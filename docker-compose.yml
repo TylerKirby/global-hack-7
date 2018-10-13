@@ -12,6 +12,8 @@ services:
     image: mongo:4
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
   data:
     build: data/randomuser
     links:
@@ -26,3 +28,5 @@ services:
       - KEYCLOAK_IMPORT=/tmp/stabilty-realm.json
     volumes:
       - ./config/stabilty-realm.json:/tmp/stabilty-realm.json
+volumes:
+  mongo-data:

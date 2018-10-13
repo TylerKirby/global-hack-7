@@ -1,0 +1,15 @@
+{
+  "name": "stabilty-persistance-api",
+  "version": "1.0.0",
+  "description": "Stabilitys database persistance api",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.3"
+  }
+}
