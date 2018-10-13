@@ -12,4 +12,8 @@ query {
   people {
     name
   }
+
+  movie(id: 42){
+      title
+    }
 }
