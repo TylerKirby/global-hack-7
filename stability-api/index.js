@@ -1,5 +1,11 @@
-const { ApolloServer, gql } = require('apollo-server');
+const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-server');
+const {find, filter} = require('lodash');
+const {MoviesAPI} = require('./MoviesAPI');
+const {EmploymentAPI} = require('./EmploymentAPI');
+const fs = require('fs');
+const path = require('path');
 
+const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/data/countries.json'), 'utf8'));
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
 // from an existing data source like a REST API or database.
@@ -7,6 +13,7 @@ const books = [
   {
     title: 'Harry Potter and the Chamber of Secrets',
     author: {
+      id: 2,
       name: 'J.K. Rowling',
       age: 42
     },
@@ -14,6 +21,7 @@ const books = [
   {
     title: 'Jurassic Park',
     author: {
+      id: 3,
       name: 'Michael Crichton',
       age: 42
     },
@@ -21,6 +29,7 @@ const books = [
   {
     title: 'A Book',
     author: {
+      id: 4,
       name: 'A pet named steve',
       age: 42
     },
@@ -28,6 +37,7 @@ const books = [
   {
     title: 'Jurassic Park',
     author: {
+      id: 5,
       name: 'Michael Crichton',
       age: 42
     },
@@ -37,21 +47,25 @@ const books = [
 const authors = [
   {
     name: 'J.K. Rowling',
-    age: 42
+    age: 42,
+    id: 2
   },
   {
     name: 'Michael Crichton',
-    age: 42
+    age: 42,
+    id: 3
   },
   {
     name: 'A pet named steve',
-    age: 42
+    age: 42,
+    id: 4
   },
   {
     name: 'Michael Crichton',
-    age: 42
+    age: 42,
+    id: 5
   },
-]
+];
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
@@ -65,37 +79,116 @@ const typeDefs = gql`
   }
   
   type Author {
+    id: Int,
+    name: String
+    age: Int
+    books: [Book]
+  }
+  
+  type Movie {
+    title: String
+  }
+  
+  type Person {
     name: String
     age: Int
   }
+  
+  type Country {
+    name: String
+  }
+  
+  type EmploymentOpportunity {
+     name: String
+     id: Int
+     description: String
+     imageUrl: String
+     type: String
+  }
+  
+  type StabilityOption {
+     name: String
+     id: Int
+     type: String
+     description: String
+     imageUrl: String
+  }
 
-  # The "Query" type is the root of all GraphQL queries.
-  # (A "Mutation" type will be covered later on.)
   type Query {
-    books: [Book]
-    getBooks: [Book]
-    getAuthor: [Author]
+    author: Author
+    people: [Person]
+    employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    skillOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    healthOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    communityOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    stabilityOptionsForId(id: Int): [StabilityOption]
+    countriesThatStartWith(prefix: String): [Country]
+    movie(id: Int): Movie
+    authenticationError: String
+    getAuthor(id: Int): Author
   }
   
 `;
 
-// Resolvers define the technique for fetching the types in the
-// schema.  We'll retrieve books from the "books" array above.
+const mocks = {
+  Query: () => ({
+    people: () => new MockList([0, 12]),
+    employmentOpportunitiesForId: () => new MockList([0, 24]),
+    skillOpportunitiesForId: () => new MockList([0, 24]),
+    healthOpportunitiesForId: () => new MockList([0, 24]),
+    communityOpportunitiesForId: () => new MockList([0, 24]),
+    stabilityOptionsForId: () => new MockList([4, 4]),
+  }),
+  String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
+};
+
 const resolvers = {
   Query: {
-    books: () => books,
-    getBooks: () => books,
-    getAuthor: () => authors
+    author(root, args, context, info) {
+      return find(authors, {id: args.id});
+    },
+    movie: async (_source, { id }, { dataSources }) => {
+      return dataSources.moviesAPI.getMovie(id);
+    },
+    countriesThatStartWith(root, {prefix}, context, info){
+      const prefixLowerCase = prefix.toLowerCase();
+      return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
+    },
+    // employmentOpportunitiesForId(root, {id}, context, info){
+    //   const prefixLowerCase = id.toLowerCase();
+    //   return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
+    // },
+    authenticationError: (parent, args, context) => {
+      throw new AuthenticationError('must authenticate');
+    },
+    getAuthor(root, args, context, info) {
+      return find(authors, {id: args.id})
+    }
+  },
+  Author: {
+    books(root, args, context, info) {
+      return books.filter(book => book.author.id === root.id)
+    },
   },
 };
 
 // In the most basic sense, the ApolloServer can be started
 // by passing type definitions (typeDefs) and the resolvers
 // responsible for fetching the data for those types.
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources: () => ({
+    moviesAPI: new MoviesAPI(),
+    employmentAPI: new EmploymentAPI(),
+  }),
+  mocks,
+  mockEntireSchema: false,
+
+});
 
 // This `listen` method launches a web-server.  Existing apps
 // can utilize middleware options, which we'll discuss later.
-server.listen().then(({ url }) => {
+server.listen().then(({url}) => {
   console.log(`🚀  Server ready at ${url}`);
 });

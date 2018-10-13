@@ -1,0 +1,19 @@
+query {
+  getAuthor(id: 2){
+    name
+    books {
+      title
+      author {
+        name # this will be the same as the name above
+      }
+    }
+  }
+
+  people {
+    name
+  }
+
+  movie(id: 42){
+      title
+    }
+}
