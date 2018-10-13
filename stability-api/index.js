@@ -105,11 +105,20 @@ const typeDefs = gql`
      imageUrl: String
      type: String
   }
+  
+  type StabilityOption {
+     name: String
+     id: Int
+     type: String
+     description: String
+     imageUrl: String
+  }
 
   type Query {
     author: Author
     people: [Person]
     employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    stabilityOptionsForId(id: Int): [StabilityOption]
     countriesThatStartWith(prefix: String): [Country]
     movie(id: Int): Movie
     authenticationError: String
@@ -122,8 +131,9 @@ const mocks = {
   Query: () => ({
     people: () => new MockList([0, 12]),
     employmentOpportunitiesForId: () => new MockList([0, 24]),
+    stabilityOptionsForId: () => new MockList([4, 4]),
   }),
-  String: () => `I am a mock: ${Math.ceil(100 * Math.random())}`,
+  String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
 
 const resolvers = {
