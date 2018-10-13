@@ -1,4 +1,4 @@
-const {ApolloServer, gql, MockList} = require('apollo-server');
+const {ApolloServer, gql, MockList,AuthenticationError} = require('apollo-server');
 const {find, filter} = require('lodash');
 
 // This is a (sample) collection of books we'll be able to query
@@ -88,6 +88,8 @@ const typeDefs = gql`
   type Query {
     author: Author
     people: [Person]
+    readError: String
+    authenticationError: String
     getAuthor(id: Int): Author
   }
   
@@ -104,6 +106,12 @@ const resolvers = {
   Query: {
     author(root, args, context, info) {
       return find(authors, {id: args.id});
+    },
+    readError: (parent, args, context) => {
+      fs.readFileSync('/does/not/exist');
+    },
+    authenticationError: (parent, args, context) => {
+      throw new AuthenticationError('must authenticate');
     },
     getAuthor(root, args, context, info){
       return find(authors, {id: args.id})
