@@ -23,4 +23,6 @@ services:
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
-
+      - KEYCLOAK_IMPORT=/tmp/stability-realm.json
+    volumes:
+      - ./config/stability-realm.json:/tmp/stability-realm.json
