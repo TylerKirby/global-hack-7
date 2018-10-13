@@ -134,7 +134,6 @@ const typeDefs = gql`
      skills: [Skill]
   }
   
-  
   input SkillInput {
     id: String!
     name: String
@@ -155,6 +154,7 @@ const typeDefs = gql`
   type Mutation {
     #todo should make an actual type
     addAnUnstable(anUnstable: TheUnstableInput!): TheUnstable!
+    contactAnUnstable(unstableId: String): String
   }
 
   type Query {
@@ -195,7 +195,8 @@ const mocks = {
 
 const resolvers = {
   Mutation: {
-    addAnUnstable: (anUnstable)=> ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)})
+    addAnUnstable: (anUnstable)=> ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)}),
+    contactAnUnstable: unstableId => unstableId,
   },
   Query: {
     author(root, args, context, info) {
