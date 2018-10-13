@@ -6,19 +6,27 @@ services:
     links:
       - "mongo"
       - "keycloak"
-    volumes:
-      - "./app/scripts/wait_for_es.sh:/usr/bin/wait_for_es.sh"
     ports:
       - "3000:3000"
   mongo:
     image: mongo:4
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  data:
+    build: data/randomuser
+    links:
+      - "mongo"
   keycloak:
     image: jboss/keycloak
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
-
+      - KEYCLOAK_IMPORT=/tmp/stabilty-realm.json
+    volumes:
+      - ./config/stabilty-realm.json:/tmp/stabilty-realm.json
+volumes:
+  mongo-data:

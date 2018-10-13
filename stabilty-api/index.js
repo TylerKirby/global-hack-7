@@ -100,7 +100,8 @@ const typeDefs = gql`
   
   type EmploymentOpportunity {
      name: String
-     id: Int
+     _id: Int
+     stabilityId: String # The suggestion id
      description: String
      imageUrl: String
      type: String
@@ -108,15 +109,61 @@ const typeDefs = gql`
   
   type StabilityOption {
      name: String
-     id: Int
+     _id: Int
+     stabilityId: String # The suggestion id
      type: String
      description: String
      imageUrl: String
+  }
+  
+  type Skill {
+    id: String!
+    name: String
+    proficiency: String
+  }
+  
+  type TheUnstable {
+     id: String!
+     stabilityId: String
+     firstName: String
+     lastName: String
+     phoneNumber: String
+     email: String
+     ethnicity: String
+     country: String
+     skills: [Skill]
+  }
+  
+  input SkillInput {
+    id: String!
+    name: String
+    proficiency: String
+  }
+  
+  input TheUnstableInput {
+     id: String!
+     firstName: String
+     lastName: String
+     phoneNumber: String
+     email: String
+     ethnicity: String
+     country: String
+     skills: [SkillInput]
+  }
+  
+  type Mutation {
+    #todo should make an actual type
+    addAnUnstable(anUnstable: TheUnstableInput!): TheUnstable!
+    contactAnUnstable(unstableId: String): String
   }
 
   type Query {
     author: Author
     people: [Person]
+    
+    #ID in this case is the thing that we will use to build suggestions to customize the user experience 
+    countryToId(country: String): String
+    
     employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
     skillOpportunitiesForId(id: Int): [EmploymentOpportunity]
     healthOpportunitiesForId(id: Int): [EmploymentOpportunity]
@@ -130,6 +177,9 @@ const typeDefs = gql`
   
 `;
 
+const saltedMd5 = require('salted-md5');
+const salt = process.env.SO_SALTY || 'All these flavors, and you chose to be salty';
+
 const mocks = {
   Query: () => ({
     people: () => new MockList([0, 12]),
@@ -138,11 +188,16 @@ const mocks = {
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
+    countryToId: ()=> saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
 
 const resolvers = {
+  Mutation: {
+    addAnUnstable: (anUnstable)=> ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)}),
+    contactAnUnstable: unstableId => unstableId,
+  },
   Query: {
     author(root, args, context, info) {
       return find(authors, {id: args.id});
