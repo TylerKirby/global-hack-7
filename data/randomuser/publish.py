@@ -1,7 +1,5 @@
 #!/usr/bin/python
-"""
-Publish user and country data
-"""
+
 import json
 from pymongo import MongoClient
 
@@ -14,6 +12,7 @@ with open('data/users.json') as fp:
 while True:
     try:
         client = MongoClient('mongodb://mongo:27017/')
+        client.server_info()
         break
     except Exception as e:
         print('waiting for mongo')
