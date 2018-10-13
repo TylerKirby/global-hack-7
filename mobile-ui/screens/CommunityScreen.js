@@ -19,31 +19,41 @@ query {
 }
 `;
 
-const CommunityScreen = () => (
-  <Query query={GET_COMMUNITY_DATA}>
-    {({ loading, error, data }) => {
-      if (loading) return 'Loading...';
-      if (error) return `Error! ${error.message}`;
-      console.log()
-      return (
-        <Container>
-          <Header>
-            <Text>Community</Text>
-          </Header>
-          <Content>
-            <CustomCard
-              title='test'
-              description='test'
-              phoneNumber="123-456-7890"
-              imageUri='test'
-            />
-          </Content>
-        </Container>
-      );
-    }}
+class CommunityScreen extends React.Component {
+  handleOnPress = () => this.props.navigation.navigate('DetailsScreen');
 
-  </Query>
+  render() {
+    return (
+      <Query query={GET_COMMUNITY_DATA}>
+        {({ loading, error, data }) => {
+          if (loading) return 'Loading...';
+          if (error) return `Error! ${error.message}`;
 
-);
+          return (
+            <Container>
+              <Header>
+                <Text>Community</Text>
+              </Header>
+              <Content>
+                {
+                  data.stabilityOptionsForId.map(e => (
+                    <CustomCard
+                      key={e.name}
+                      title={e.name}
+                      description={e.description}
+                      phoneNumber="123-456-7890"
+                      imageUri={e.imageUrl}
+                      onPress={this.handleOnPress}
+                    />))
+                }
+              </Content>
+            </Container>
+          );
+        }}
+
+      </Query>
+    );
+  }
+}
 
 export default CommunityScreen;

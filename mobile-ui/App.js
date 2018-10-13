@@ -12,6 +12,7 @@ import HealthScreen from './screens/HealthScreen';
 import SkillsScreen from './screens/WorkScreen';
 import WorkScreen from './screens/WorkScreen';
 import Dashboard from './screens/DashboardScreen';
+import DetailsScreen from './screens/DetailsScreen';
 
 
 const styles = StyleSheet.create({
@@ -52,7 +53,9 @@ const RootStack = createStackNavigator(
     SkillsScreen: {
       screen: SkillsScreen,
     },
-
+    DetailsScreen: {
+      screen: DetailsScreen,
+    }
   },
   {
     initialRouteName: 'Dashboard',

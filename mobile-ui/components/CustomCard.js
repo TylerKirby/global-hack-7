@@ -5,7 +5,7 @@ import {
 } from 'native-base';
 
 const CustomCard = ({
-  title, type, imageUri, description, phoneNumber,
+  title, type, imageUri, description, phoneNumber, onPress,
 }) => (
   <Card>
     <CardItem header>
@@ -15,19 +15,22 @@ const CustomCard = ({
         <Text note>{type}</Text>
       </Left>
     </CardItem>
-    <CardItem button onPress={() => console.warn('go away')}>
+    <CardItem button onPress={() => onPress()}>
       <Body>
         <Image source={{ uri: 'https://cataas.com/cat/says/hello%20world!' }} style={{ height: 200, width: '100%' }} />
         <Text>{description}</Text>
       </Body>
     </CardItem>
-    <CardItem>
-      <Left>
-        <Button transparent>
+    <CardItem footer style={{ justifyContent: 'flex-start' }}>
+      <Button transparent textStyle={{color: '#87838B'}} style={{ flexDirection: 'column' }}>
           <Icon name="ios-call" />
-          <Text>{phoneNumber}</Text>
         </Button>
-      </Left>
+        <Button transparent textStyle={{color: '#87838B'}} style={{ flexDirection: 'column' }}>
+          <Icon name="ios-map" />
+        </Button>
+        <Button transparent textStyle={{color: '#87838B'}} style={{ flexDirection: 'column' }}>
+          <Icon name="ios-desktop" />
+        </Button>
     </CardItem>
   </Card>
 );
