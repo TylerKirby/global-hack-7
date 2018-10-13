@@ -1,4 +1,4 @@
-const {ApolloServer, gql} = require('apollo-server');
+const {ApolloServer, gql, MockList} = require('apollo-server');
 const {find, filter} = require('lodash');
 
 // This is a (sample) collection of books we'll be able to query
@@ -79,13 +79,26 @@ const typeDefs = gql`
     age: Int
     books: [Book]
   }
+  
+  type Person {
+    name: String
+    age: Int
+  }
 
   type Query {
     author: Author
+    people: [Person]
     getAuthor(id: Int): Author
   }
   
 `;
+
+const mocks = {
+  Query: () =>({
+    people: () => new MockList([0, 12]),
+  }),
+  String: () => `I am a mock: ${Math.ceil(100 *Math.random())}`,
+};
 
 const resolvers = {
   Query: {
@@ -106,7 +119,7 @@ const resolvers = {
 // In the most basic sense, the ApolloServer can be started
 // by passing type definitions (typeDefs) and the resolvers
 // responsible for fetching the data for those types.
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({typeDefs, resolvers, mocks, mockEntireSchema: false});
 
 // This `listen` method launches a web-server.  Existing apps
 // can utilize middleware options, which we'll discuss later.
