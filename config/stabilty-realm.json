@@ -1,6 +1,6 @@
 {
-  "id": "stability",
-  "realm": "stability",
+  "id": "stabilty",
+  "realm": "stabilty",
   "notBefore": 0,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
@@ -42,7 +42,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "stability"
+        "containerId": "stabilty"
       },
       {
         "id": "46c2134b-3b95-441f-b9ed-dfa082fe47cc",
@@ -50,7 +50,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "stability"
+        "containerId": "stabilty"
       }
     ],
     "client": {
@@ -248,7 +248,7 @@
         }
       ],
       "security-admin-console": [],
-      "stability-client": [],
+      "stabilty-client": [],
       "admin-cli": [],
       "broker": [
         {
@@ -361,13 +361,13 @@
       "id": "f419a180-46bd-4374-8bdb-2fe11b88a67c",
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
-      "baseUrl": "/auth/admin/stability/console/index.html",
+      "baseUrl": "/auth/admin/stabilty/console/index.html",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/auth/admin/stability/console/*"
+        "/auth/admin/stabilty/console/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -449,7 +449,7 @@
     },
     {
       "id": "0bc45aa5-f258-45fe-aad7-b3af116ad2ea",
-      "clientId": "stability-client",
+      "clientId": "stabilty-client",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -503,7 +503,7 @@
       "id": "e6256948-7ae2-4028-bd6d-5dbbd6930a4b",
       "clientId": "account",
       "name": "${client_account}",
-      "baseUrl": "/auth/realms/stability/account",
+      "baseUrl": "/auth/realms/stabilty/account",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -513,7 +513,7 @@
         "manage-account"
       ],
       "redirectUris": [
-        "/auth/realms/stability/account/*"
+        "/auth/realms/stabilty/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
