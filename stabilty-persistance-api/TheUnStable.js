@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
-
 //This is what I am calling the immigrant at the moment.
 const TheUnstableSchema = new Schema({
   _id: String,

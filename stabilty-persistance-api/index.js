@@ -10,12 +10,12 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT || 8083;        // set our port
 
-const mongoose   = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/stability', {useNewUrlParser: true}); // connect to our database
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+db.once('open', function () {
   // we're connected!
 });
 
@@ -27,6 +27,18 @@ const router = express.Router();              // get an instance of the express 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function (req, res) {
   res.json({message: 'hooray! welcome to our api!'});
+});
+
+router.post('/instability', (request, response) => {
+  response.json({message: `hooray! you created an ${JSON.stringify(request.body)}!`})
+});
+
+router.put('/instability', (request, response) => {
+  response.json({message: 'hooray! you updated an instability!'})
+});
+
+router.delete('/instability', (request, response) => {
+  response.json({message: 'hooray! you deleted an instability!'})
 });
 
 // more routes for our API will happen here
