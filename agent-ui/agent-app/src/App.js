@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Container, Form, Menu } from 'semantic-ui-react';
-import { ContactInfo } from 'components/ContactInfo';
-import { SkillInfo } from 'components/SkillInfo';
+import { Button, Container, Menu } from 'semantic-ui-react';
+import { ClientEntry } from 'components/ClientEntry';
 
 class App extends Component {
   state = {
@@ -45,16 +44,11 @@ class App extends Component {
             </Menu.Item>
           </Menu>
 
-          <Form>
-            <ContactInfo
-              style={this.showHide(activePanel === 'contactInfo')}/>
-            <SkillInfo
-              style={this.showHide(activePanel === 'skillInfo')}/>
+          <ClientEntry
+            onSave={() => console.log('save')}
+            onCancel={this.handleCancelClick}
+            style={this.showHide(activePanel === 'contactInfo')}/>
 
-            <Button>Save</Button>
-            <Button onClick={this.handleCancelClick}>Cancel</Button>
-
-          </Form>
         </Container>
       </Container>
     );

@@ -13,9 +13,9 @@ import 'semantic-ui-css/semantic.min.css';
 serviceWorker.unregister();
 
 const kc = Keycloak({
-  "realm": 'stability',
+  "realm": 'stabilty',
   "url": 'http://localhost:8081/auth',
-  "clientId": 'stability-client',
+  "clientId": 'stabilty-client',
   "bearerOnly": true,
   "use-resource-role-mappings": true,
 });

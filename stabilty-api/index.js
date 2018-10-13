@@ -95,7 +95,8 @@ const typeDefs = gql`
   }
   
   type Country {
-    name: String
+    name: String,
+    flag: String,
   }
   
   type EmploymentOpportunity {

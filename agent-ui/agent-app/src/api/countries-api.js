@@ -1,15 +1,16 @@
+import gql from 'graphql-tag';
 
-export const getCountries = () => {
-  return fetch('data/countries.json')
-    .then(
-      (response) => {
-        if(response.status !== 200) {
-          console.log(`failed to get countries status: ${response.status} - ${response.body}`);
-          return;
-        }
+import { client } from 'api/client';
 
-        return response.json().then((data) => data);
+export const getCountries = async (prefix) => {
+  return await client.query({
+    query: gql`
+      {
+        countriesThatStartWith(prefix: "${prefix}") {
+          name,
+          flag
+        }      
       }
-    )
-    .catch((error) => console.log(`Error getting countries. ${error.message}`))
+    `,
+  });
 };
