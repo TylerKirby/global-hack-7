@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  app:
+    image: node:10
+    links:
+      - "mongo"
+      - "keycloak"
+    volumes:
+      - "./app/scripts/wait_for_es.sh:/usr/bin/wait_for_es.sh"
+    ports:
+      - "3000:3000"
+  mongo:
+    image: mongo:4
+    ports:
+      - "27017:27017"
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+
