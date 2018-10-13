@@ -1,5 +1,6 @@
 const express = require('express');
-const unStable = require('./TheUnStable');
+const UnStable = require('./TheUnStable');
+const Skill = require('./Skill');
 const app = express();
 const bodyParser = require('body-parser');
 
@@ -29,16 +30,35 @@ router.get('/', function (req, res) {
   res.json({message: 'hooray! welcome to our api!'});
 });
 
-router.post('/instability', (request, response) => {
-  response.json({message: `hooray! you created an ${JSON.stringify(request.body)}!`})
+skills = undefined;
+router.post('/instabilty', (request, response, next) => {
+  const requestBody = request.body;
+  const newInstablity = new UnStable(requestBody);
+  newInstablity.save(err=> {
+    if(err){
+      next(err)
+    } else{
+      response.json(newInstablity)
+    }
+  });
 });
 
-router.put('/instability', (request, response) => {
-  response.json({message: 'hooray! you updated an instability!'})
+router.get('/instabilty', (request, response, next) => {
+   UnStable.find((err, result)=> {
+     if(err){
+       next(err)
+     } else{
+       response.json(result)
+     }
+   })
 });
 
-router.delete('/instability', (request, response) => {
-  response.json({message: 'hooray! you deleted an instability!'})
+router.put('/instabilty', (request, response) => {
+  response.json({message: 'hooray! you updated an instabilty!'})
+});
+
+router.delete('/instabilty', (request, response) => {
+  response.json({message: 'hooray! you deleted an instabilty!'})
 });
 
 // more routes for our API will happen here
