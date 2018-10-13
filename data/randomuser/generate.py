@@ -1,11 +1,8 @@
 """ Use randomuser.me to generate random profile data. Also generate country data.
 """
 import json, requests, random
-from pymongo import MongoClient
 
 size = 1000
-
-client = MongoClient('mongodb://localhost:27017/')
 
 random_user_api = 'https://randomuser.me/api/'
 country_api = 'https://restcountries.eu/rest/v2/alpha'
