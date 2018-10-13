@@ -9,15 +9,12 @@ import CustomCard from '../components/CustomCard';
 
 
 const GET_COMMUNITY_DATA = gql`
-{
-  query { 
-    stabilityOptionsForId(id: 4) {
+query { 
+  stabilityOptionsForId(id: 4) {
     name
-    id
     type
     description
     imageUrl
-    }
   }
 }
 `;
@@ -27,7 +24,7 @@ const CommunityScreen = () => (
     {({ loading, error, data }) => {
       if (loading) return 'Loading...';
       if (error) return `Error! ${error.message}`;
-
+      console.log()
       return (
         <Container>
           <Header>
@@ -35,10 +32,10 @@ const CommunityScreen = () => (
           </Header>
           <Content>
             <CustomCard
-              title={data.name}
-              description={data.description}
+              title='test'
+              description='test'
               phoneNumber="123-456-7890"
-              imageUri={data.imageUrl}
+              imageUri='test'
             />
           </Content>
         </Container>
