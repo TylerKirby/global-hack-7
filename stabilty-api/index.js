@@ -136,6 +136,10 @@ const typeDefs = gql`
   }
   
   input SkillInput {
+    name: String
+    proficiency: String
+  }
+  input SkillUpdateInput {
     id: String!
     name: String
     proficiency: String
@@ -151,9 +155,21 @@ const typeDefs = gql`
      skills: [SkillInput]
   }
   
+  input TheUnstableUpdateInput {
+     id: String!
+     firstName: String
+     lastName: String
+     phoneNumber: String
+     email: String
+     ethnicity: String
+     country: String
+     skills: [SkillInput]
+  }
+  
   type Mutation {
     #todo should make an actual type
     addAnUnstable(anUnstable: TheUnstableInput!): TheUnstable!
+    updateAnUnstable(anUnstable: TheUnstableUpdateInput!): TheUnstable!
     contactAnUnstable(unstableId: String): String
   }
 
@@ -188,24 +204,28 @@ const mocks = {
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
-    countryToId: ()=> saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
+    countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
 
 const resolvers = {
   Mutation: {
-    addAnUnstable: (anUnstable)=> ({...anUnstable, stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)}),
-    contactAnUnstable: unstableId => unstableId,
+    addAnUnstable: (_, {anUnstable}) => ({
+      ...anUnstable,
+      stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
+    }),
+    updateAnUnstable: (_, {anUnstable}) => anUnstable,
+    contactAnUnstable: (_, {unstableId}) => unstableId,
   },
   Query: {
     author(root, args, context, info) {
       return find(authors, {id: args.id});
     },
-    movie: async (_source, { id }, { dataSources }) => {
+    movie: async (_source, {id}, {dataSources}) => {
       return dataSources.moviesAPI.getMovie(id);
     },
-    countriesThatStartWith(root, {prefix}, context, info){
+    countriesThatStartWith(root, {prefix}, context, info) {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
