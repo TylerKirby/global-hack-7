@@ -1,4 +1,5 @@
-const { ApolloServer, gql } = require('apollo-server');
+const {ApolloServer, gql} = require('apollo-server');
+const {find, filter} = require('lodash');
 
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
@@ -7,6 +8,7 @@ const books = [
   {
     title: 'Harry Potter and the Chamber of Secrets',
     author: {
+      id: 2,
       name: 'J.K. Rowling',
       age: 42
     },
@@ -14,6 +16,7 @@ const books = [
   {
     title: 'Jurassic Park',
     author: {
+      id: 3,
       name: 'Michael Crichton',
       age: 42
     },
@@ -21,6 +24,7 @@ const books = [
   {
     title: 'A Book',
     author: {
+      id: 4,
       name: 'A pet named steve',
       age: 42
     },
@@ -28,6 +32,7 @@ const books = [
   {
     title: 'Jurassic Park',
     author: {
+      id: 5,
       name: 'Michael Crichton',
       age: 42
     },
@@ -37,21 +42,25 @@ const books = [
 const authors = [
   {
     name: 'J.K. Rowling',
-    age: 42
+    age: 42,
+    id: 2
   },
   {
     name: 'Michael Crichton',
-    age: 42
+    age: 42,
+    id: 3
   },
   {
     name: 'A pet named steve',
-    age: 42
+    age: 42,
+    id: 4
   },
   {
     name: 'Michael Crichton',
-    age: 42
+    age: 42,
+    id: 5
   },
-]
+];
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
@@ -65,37 +74,42 @@ const typeDefs = gql`
   }
   
   type Author {
+    id: Int,
     name: String
     age: Int
+    books: [Book]
   }
 
-  # The "Query" type is the root of all GraphQL queries.
-  # (A "Mutation" type will be covered later on.)
   type Query {
-    books: [Book]
-    getBooks: [Book]
-    getAuthor: [Author]
+    author: Author
+    getAuthor(id: Int): Author
   }
   
 `;
 
-// Resolvers define the technique for fetching the types in the
-// schema.  We'll retrieve books from the "books" array above.
 const resolvers = {
   Query: {
-    books: () => books,
-    getBooks: () => books,
-    getAuthor: () => authors
+    author(root, args, context, info) {
+      return find(authors, {id: args.id});
+    },
+    getAuthor(root, args, context, info){
+      return find(authors, {id: args.id})
+    }
+  },
+  Author: {
+    books(root, args, context, info) {
+      return books.filter(book=> book.author.id === root.id)
+    },
   },
 };
 
 // In the most basic sense, the ApolloServer can be started
 // by passing type definitions (typeDefs) and the resolvers
 // responsible for fetching the data for those types.
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({typeDefs, resolvers});
 
 // This `listen` method launches a web-server.  Existing apps
 // can utilize middleware options, which we'll discuss later.
-server.listen().then(({ url }) => {
+server.listen().then(({url}) => {
   console.log(`🚀  Server ready at ${url}`);
 });
