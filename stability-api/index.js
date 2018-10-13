@@ -118,6 +118,9 @@ const typeDefs = gql`
     author: Author
     people: [Person]
     employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    skillOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    healthOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    communityOpportunitiesForId(id: Int): [EmploymentOpportunity]
     stabilityOptionsForId(id: Int): [StabilityOption]
     countriesThatStartWith(prefix: String): [Country]
     movie(id: Int): Movie
@@ -131,6 +134,9 @@ const mocks = {
   Query: () => ({
     people: () => new MockList([0, 12]),
     employmentOpportunitiesForId: () => new MockList([0, 24]),
+    skillOpportunitiesForId: () => new MockList([0, 24]),
+    healthOpportunitiesForId: () => new MockList([0, 24]),
+    communityOpportunitiesForId: () => new MockList([0, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
