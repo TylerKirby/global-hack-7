@@ -108,6 +108,19 @@ const typeDefs = gql`
      type: String
   }
   
+  type EmploymentOpportunityDetails {
+     name: String
+     _id: Int
+     stabilityId: String # The suggestion id
+     description: String
+     imageUrl: String
+     longText: String
+     phoneNumber: String
+     address: String
+     website: String
+     type: String
+  }
+  
   type StabilityOption {
      name: String
      _id: Int
@@ -185,9 +198,13 @@ const typeDefs = gql`
     countryToId(country: String): String
     
     employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    employmentOpportunityDetails(id: Int): EmploymentOpportunityDetails
     skillOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    skillOpportunityDetails(id: Int): EmploymentOpportunityDetails
     healthOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    healthOpportunityDetails(id: Int): EmploymentOpportunityDetails
     communityOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    communityOpportunityDetails(id: Int): EmploymentOpportunityDetails
     stabilityOptionsForId(id: Int): [StabilityOption]
     countriesThatStartWith(prefix: String): [Country]
     movie(id: Int): Movie
@@ -206,6 +223,10 @@ const mocks = {
     skillOpportunitiesForId: () => new MockList([0, 24]),
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
+    employmentOpportunityDetails: () => ({}),
+    skillOpportunityDetails: () => ({}),
+    healthOpportunityDetails: () => ({}),
+    communityOpportunityDetails: () => ({}),
     allInstabilties: () => new MockList([24, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
     countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
