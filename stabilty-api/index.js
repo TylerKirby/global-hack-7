@@ -170,6 +170,7 @@ const typeDefs = gql`
     #todo should make an actual type
     addAnUnstable(anUnstable: TheUnstableInput!): TheUnstable!
     updateAnUnstable(anUnstable: TheUnstableUpdateInput!): TheUnstable!
+    deleteAnUnstable(anUnstable: TheUnstableUpdateInput!): TheUnstable!
     contactAnUnstable(unstableId: String): String
   }
 
@@ -190,7 +191,6 @@ const typeDefs = gql`
     authenticationError: String
     getAuthor(id: Int): Author
   }
-  
 `;
 
 const saltedMd5 = require('salted-md5');
