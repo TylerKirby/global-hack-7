@@ -1,5 +1,6 @@
-const {ApolloServer, gql} = require('apollo-server');
+const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-server');
 const {find, filter} = require('lodash');
+const {MoviesAPI} = require('./MoviesAPI');
 
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
@@ -79,26 +80,55 @@ const typeDefs = gql`
     age: Int
     books: [Book]
   }
+  
+  type Movie {
+    title: String
+  }
+  
+  type Person {
+    name: String
+    age: Int
+  }
 
   type Query {
     author: Author
+    people: [Person]
+    readError: String
+    movie(id: Int): Movie
+    authenticationError: String
     getAuthor(id: Int): Author
   }
   
 `;
+
+const mocks = {
+  Query: () => ({
+    people: () => new MockList([0, 12]),
+  }),
+  String: () => `I am a mock: ${Math.ceil(100 * Math.random())}`,
+};
 
 const resolvers = {
   Query: {
     author(root, args, context, info) {
       return find(authors, {id: args.id});
     },
-    getAuthor(root, args, context, info){
+    movie: async (_source, { id }, { dataSources }) => {
+      return dataSources.moviesAPI.getMovie(id);
+    },
+    readError: (parent, args, context) => {
+      fs.readFileSync('/does/not/exist');
+    },
+    authenticationError: (parent, args, context) => {
+      throw new AuthenticationError('must authenticate');
+    },
+    getAuthor(root, args, context, info) {
       return find(authors, {id: args.id})
     }
   },
   Author: {
     books(root, args, context, info) {
-      return books.filter(book=> book.author.id === root.id)
+      return books.filter(book => book.author.id === root.id)
     },
   },
 };
@@ -106,7 +136,16 @@ const resolvers = {
 // In the most basic sense, the ApolloServer can be started
 // by passing type definitions (typeDefs) and the resolvers
 // responsible for fetching the data for those types.
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources: () => ({
+    moviesAPI: new MoviesAPI(),
+  }),
+  mocks,
+  mockEntireSchema: false,
+
+});
 
 // This `listen` method launches a web-server.  Existing apps
 // can utilize middleware options, which we'll discuss later.
