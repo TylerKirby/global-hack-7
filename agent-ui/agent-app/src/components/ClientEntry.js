@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Form, Icon, Input, Search } from 'semantic-ui-react';
+import { Button, Form, Search } from 'semantic-ui-react';
 import { getCountries } from 'api/countries-api';
+import { Mutation } from 'react-apollo';
+import { addClientMutation } from 'api/client-api';
 
 
 export class ClientEntry extends Component {
@@ -10,6 +12,8 @@ export class ClientEntry extends Component {
   };
 
   resetComponent = () => this.setState({ isLoading: false, results: [], value: '' });
+
+  handleCountrySelected = (result) => this.setState({ country: result.title });
 
   handleOnSearchChanged = (e, { value }) => {
     this.setState({ isLoading: true, value });
@@ -30,41 +34,58 @@ export class ClientEntry extends Component {
   };
 
   render() {
-    const { style, onSave, onCancel } = this.props;
-    const { results } = this.state;
+    const { style, onCancel } = this.props;
+
+    const {results} = this.state;
 
     return (
-      <Form style={style}>
-        <Form.Field>
-          <label>Given Name</label>
-          <input placeholder="Given Name"/>
+      <Mutation mutation={addClientMutation}>
+        {(addAnUnstable) => (
+          <Form onSubmit={(e) => {
+            e.preventDefault();
 
-        </Form.Field>
-        <Form.Field>
-          <label>Family Name</label>
-          <input placeholder="Family Name"/>
-        </Form.Field>
-        <Form.Field>
-          <label>Phone Number</label>
-          <Input type='tel' placeholder='Phone Number'/>
-        </Form.Field>
-        <Form.Field>
-          <label>Email</label>
-          <Input iconPosition='right' placeholder='Email'>
-            <Icon name='at'/>
-            <input/>
-          </Input>
-        </Form.Field>
-        <Form.Field>
-          <label>Origin Country</label>
-          <Search
-            results={results}
-            onSearchChange={this.handleOnSearchChanged}
-          />
-        </Form.Field>
-        <Button onClick={onSave}>Save</Button>
-        <Button onClick={onCancel}>Cancel</Button>
-      </Form>
+            const { firstName, lastName, email, phoneNumber } = this.state;
+            const client = { firstName, lastName, email, phoneNumber };
+
+            addAnUnstable({ variables: { anUnstable: { ...client } } });
+          }} style={style}>
+            <Form.Input
+              name='firstName'
+              label='Given Name'
+              placeholder='Given Name'
+            />
+            <Form.Input
+              name='lastName'
+              label='Family Name'
+              placeholder='Family Name'
+            />
+            <Form.Input
+              name='phoneNumber'
+              label='Phone'
+              placeholder='Phone'
+            />
+            <Form.Input
+              name='email'
+              label='Email'
+              placeholder='Email'
+            />
+
+            <Form.Field>
+              <label>Origin Country</label>
+              <Search
+                results={results}
+                onSearchChange={this.handleOnSearchChanged}
+                onSelectionChange={this.handleCountrySelected}
+              />
+            </Form.Field>
+
+            <Button type='submit'>Save</Button>
+            <Button onClick={onCancel}>Cancel</Button>
+          </Form>
+        )
+        }
+
+      </Mutation>
     );
   }
 }
