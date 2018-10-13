@@ -178,6 +178,9 @@ const typeDefs = gql`
     author: Author
     people: [Person]
     
+    #TODO: THIS NEEDS AUTHENTICATION
+    allInstabilties: [TheUnstable]
+    
     #ID in this case is the thing that we will use to build suggestions to customize the user experience 
     countryToId(country: String): String
     
@@ -203,6 +206,7 @@ const mocks = {
     skillOpportunitiesForId: () => new MockList([0, 24]),
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
+    allInstabilties: () => new MockList([24, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
     countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
   }),
@@ -216,6 +220,7 @@ const resolvers = {
       stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
     }),
     updateAnUnstable: (_, {anUnstable}) => anUnstable,
+    deleteAnUnstable: (_, {anUnstable}) => anUnstable,
     contactAnUnstable: (_, {unstableId}) => unstableId,
   },
   Query: {
