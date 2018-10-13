@@ -5,7 +5,7 @@ const {EmploymentAPI} = require('./EmploymentAPI');
 const fs = require('fs');
 const path = require('path');
 
-const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/data/countries.json'), 'utf8'));
+const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/countries.json'), 'utf8'));
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
 // from an existing data source like a REST API or database.
@@ -142,7 +142,6 @@ const typeDefs = gql`
   }
   
   input TheUnstableInput {
-     id: String!
      firstName: String
      lastName: String
      phoneNumber: String
