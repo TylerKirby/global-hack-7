@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 
-import { client } from 'api/client';
+import { apollo } from 'api/apollo';
 
-export const getCountries = async (prefix) => {
-  return await client.query({
+export async function getCountries(prefix) {
+  return await apollo.query({
     query: gql`
       {
         countriesThatStartWith(prefix: "${prefix}") {
@@ -13,4 +13,4 @@ export const getCountries = async (prefix) => {
       }
     `,
   });
-};
+}
