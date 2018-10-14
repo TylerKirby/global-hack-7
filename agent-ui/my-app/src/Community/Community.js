@@ -33,7 +33,7 @@ class Community extends Component {
     await client.query({
       query: gql`
         query {
-          communityOpportunitiesForId(id: 4) {
+          communityOpportunitiesForId(id: "U2FsdGVkX1/FJXXPo/viQ9NfCsE22SZpWpX2Td/FFeM=") {
             name
             _id
             type
@@ -44,6 +44,7 @@ class Community extends Component {
       `
       })
       .then(result => {
+        console.log('result: ', result)
         const data = result.data.communityOpportunitiesForId
         const collection = data.map(values => {
           return values;
@@ -77,7 +78,6 @@ class Community extends Component {
           <NavLink to="/CardComponent">
            {this.setCards3(communities)}
            <Card onClick={(communities) => {console.log(communities); this.setCards3(communities)}}>
-            <button onClick={() => {this.setCards2()}}>Click Me</button>
             <Image>${communities.imageUrl}</Image>
             <Card.Content onClick={this.setCards2}>
             <Card.Header>${communities.name}</Card.Header>
@@ -90,10 +90,9 @@ class Community extends Component {
             </a>
             </Card.Content>
           </Card>
+          <br></br>
           <Route path="/CardComponent" render={(props) => <CardComponent {...props} communities={communities}/>} />
-
           </NavLink>
-
          </div>
         ) 
       })

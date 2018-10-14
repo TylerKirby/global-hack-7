@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/"
+  uri: "http://localhost:4000/stabilty_orgs/orgs"
 });
 
 class Employment extends Component {
@@ -21,7 +21,7 @@ class Employment extends Component {
     await client.query({
       query: gql`
         query {
-          employmentOpportunitiesForId(id: 4) {
+          employmentOpportunitiesForId(id: "U2FsdGVkX187bpz2ss67++slmWh8EEIDKj1wTYyO9Ks=") {
             name
             _id
             type

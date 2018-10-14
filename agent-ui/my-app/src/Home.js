@@ -4,7 +4,7 @@ import Employment from './Employment/Employment.js';
 import Health from './Health/Health.js';
 import Skills from './Skills/Skills.js';
 import CardComponent from './CardComponent/CardComponent.js';
-import { Grid, Image, Header, Icon, Button, Divider } from 'semantic-ui-react';
+import { Grid, Image, Header, Icon, Button, Divider, Segment, Flag } from 'semantic-ui-react';
 import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
 
 class Home extends Component {
@@ -37,7 +37,7 @@ class Home extends Component {
               <NavLink to="/employment">
                 <Button fluid='true' onClick={() => console.log('im here')}>Find the right job</Button>
               </NavLink>
-              <Divider/>
+              <Divider inverted='true'/>
               <Header textAlign='center' size='huge'>HEALTH</Header>
               <NavLink to="/health">
               <Button fluid='true'>Health-based services</Button>
@@ -51,6 +51,30 @@ class Home extends Component {
               </Grid.Column>
             </Grid.Row>
            </Grid>
+            <br></br>
+            <br></br>
+           <Segment textAlign='center'>
+            <Flag name='ae' />
+            <Flag name='af' />
+            <Flag name='al' />
+            <Flag name='ae' />
+            <Flag name='dz' />
+            <Flag name='cn' />
+            <Flag name='cr' />
+            <Flag name='sv' />
+            <Flag name='et' />
+            <Flag name='ae' />
+            <Flag name='it' />
+            <Flag name='il' />
+            <Flag name='ae' />
+            <Flag name='mx' />
+            <Flag name='cs' />
+            <Flag name='gb' />
+            <Flag name='us' />
+            <Flag name='tw' />
+            <Flag name='so' />
+            <Flag name='kr' />
+           </Segment>
                 <Route exact path="/community" component={Community} />
                 <Route path="/employment" component={Employment} />
                 <Route path="/health" component={Health} />
