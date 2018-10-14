@@ -14,12 +14,8 @@ const { RESTDataSource } = require('apollo-datasource-rest');
     return this.get(`/api/instabilty`);
   }
 
-  async getMostViewedMovies(limit = 10) {
-    const data = await this.get('movies', {
-      per_page: limit,
-      order_by: 'most_viewed',
-    });
-    return data.results;
+  async createInstability(instabilty) {
+    return this.post('/api/instabilty', instabilty);
   }
 }
 

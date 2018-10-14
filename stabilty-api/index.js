@@ -236,10 +236,12 @@ const mocks = {
 
 const resolvers = {
   Mutation: {
-    addAnUnstable: (_, {anUnstable}) => ({
-      ...anUnstable,
-      stabilityId: saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
-    }),
+    addAnUnstable: (_, {anUnstable}) => {
+      return dataSources.instabiltyAPI.createInstability(anUnstable).then(instabilites => {
+        instabilites.forEach(instabilty => instabilty.id = instabilty._id);
+        return instabilites;
+      })
+    },
     updateAnUnstable: (_, {anUnstable}) => anUnstable,
     deleteAnUnstable: (_, {anUnstable}) => anUnstable,
     contactAnUnstable: (_, {unstableId}) => unstableId,
@@ -256,7 +258,7 @@ const resolvers = {
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
     allInstabilties(root, args, {dataSources}) {
-      return dataSources.instabiltyAPI.getInstabilites().then(instabilites=> {
+      return dataSources.instabiltyAPI.getInstabilites().then(instabilites => {
         instabilites.forEach(instabilty => instabilty.id = instabilty._id);
         return instabilites;
       })
