@@ -18,94 +18,12 @@ const decryptCountry =
     };
 
 const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/countries.json'), 'utf8'));
-// This is a (sample) collection of books we'll be able to query
-// the GraphQL server for.  A more complete example might fetch
-// from an existing data source like a REST API or database.
-const books = [
-  {
-    title: 'Harry Potter and the Chamber of Secrets',
-    author: {
-      id: 2,
-      name: 'J.K. Rowling',
-      age: 42
-    },
-  },
-  {
-    title: 'Jurassic Park',
-    author: {
-      id: 3,
-      name: 'Michael Crichton',
-      age: 42
-    },
-  },
-  {
-    title: 'A Book',
-    author: {
-      id: 4,
-      name: 'A pet named steve',
-      age: 42
-    },
-  },
-  {
-    title: 'Jurassic Park',
-    author: {
-      id: 5,
-      name: 'Michael Crichton',
-      age: 42
-    },
-  },
-];
-
-const authors = [
-  {
-    name: 'J.K. Rowling',
-    age: 42,
-    id: 2
-  },
-  {
-    name: 'Michael Crichton',
-    age: 42,
-    id: 3
-  },
-  {
-    name: 'A pet named steve',
-    age: 42,
-    id: 4
-  },
-  {
-    name: 'Michael Crichton',
-    age: 42,
-    id: 5
-  },
-];
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
 
-  # This "Book" type can be used in other type declarations.
-  type Book {
-    title: String
-    author: Author
-  }
-  
-  type Author {
-    id: Int,
-    name: String
-    age: Int
-    books: [Book]
-  }
-  
-  type Movie {
-    title: String
-  }
-  
-  type Person {
-    name: String
-    age: Int
-  }
-  
   type Country {
     name: String,
     flag: String,
@@ -199,10 +117,7 @@ const typeDefs = gql`
     contactAnUnstable(unstableId: String): String
   }
 
-  type Query {
-    author: Author
-    people: [Person]
-    
+  type Query { 
     #TODO: THIS NEEDS AUTHENTICATION
     allInstabilties: [TheUnstable]
     
@@ -220,18 +135,11 @@ const typeDefs = gql`
     communityOpportunityDetails(id: Int): EmploymentOpportunityDetails
     stabilityOptionsForId(id: Int): [StabilityOption]
     countriesThatStartWith(prefix: String): [Country]
-    movie(id: Int): Movie
-    authenticationError: String
-    getAuthor(id: Int): Author
   }
 `;
 
-const saltedMd5 = require('salted-md5');
-const salt = process.env.SO_SALTY || 'All these flavors, and you chose to be salty';
-
 const mocks = {
   Query: () => ({
-    people: () => new MockList([0, 12]),
     employmentOpportunitiesForId: () => new MockList([0, 24]),
     skillOpportunitiesForId: () => new MockList([0, 24]),
     healthOpportunitiesForId: () => new MockList([0, 24]),
@@ -258,12 +166,6 @@ const resolvers = {
     contactAnUnstable: (_, {unstableId}) => unstableId,
   },
   Query: {
-    author(root, args, context, info) {
-      return find(authors, {id: args.id});
-    },
-    movie: async (_source, {id}, {dataSources}) => {
-      return dataSources.moviesAPI.getMovie(id);
-    },
     countriesThatStartWith(root, {prefix}, context, info) {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
@@ -287,17 +189,6 @@ const resolvers = {
     //   const prefixLowerCase = id.toLowerCase();
     //   return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     // },
-    authenticationError: (parent, args, context) => {
-      throw new AuthenticationError('must authenticate');
-    },
-    getAuthor(root, args, context, info) {
-      return find(authors, {id: args.id})
-    }
-  },
-  Author: {
-    books(root, args, context, info) {
-      return books.filter(book => book.author.id === root.id)
-    },
   },
 };
 
@@ -308,7 +199,6 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => ({
-    moviesAPI: new MoviesAPI(),
     employmentAPI: new EmploymentAPI(),
     instabiltyAPI: new InstabiltiesAPI(),
   }),
