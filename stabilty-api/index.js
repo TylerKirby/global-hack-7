@@ -5,6 +5,7 @@ const {EmploymentAPI} = require('./EmploymentAPI');
 const {InstabiltiesAPI} = require('./InstabiltiesAPI');
 const fs = require('fs');
 const path = require('path');
+const saltedMD = require('salted-md5');
 
 const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/countries.json'), 'utf8'));
 // This is a (sample) collection of books we'll be able to query
@@ -261,7 +262,10 @@ const resolvers = {
     },
     allInstabilties(root, args, {dataSources}) {
       return dataSources.instabiltyAPI.getInstabilites().then(instabilites => {
-        instabilites.forEach(instabilty => instabilty.id = instabilty._id);
+        instabilites.forEach(instabilty => {
+          instabilty.id = instabilty._id;
+          instabilty.stabilityId = saltedMD(instabilty.country, '4a4fpfz5GqeRQbbRcC5ZQq@sUBPWVGTe');
+        });
         return instabilites;
       })
     },
