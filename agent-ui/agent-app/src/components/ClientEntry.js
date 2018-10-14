@@ -34,7 +34,7 @@ export class ClientEntry extends Component {
   };
 
   render() {
-    const { style, onCancel } = this.props;
+    const { style, onCancel, onSave } = this.props;
 
     const {results} = this.state;
 
@@ -48,6 +48,7 @@ export class ClientEntry extends Component {
             const client = { firstName, lastName, email, phoneNumber };
 
             addAnUnstable({ variables: { anUnstable: { ...client } } });
+            onSave(client);
           }} style={style}>
             <Form.Input
               name='firstName'
