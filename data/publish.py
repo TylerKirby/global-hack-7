@@ -5,6 +5,7 @@ import json
 import time
 from pymongo import MongoClient
 from elasticsearch import Elasticsearch
+from elasticsearch.client import IngestClient
 
 MONGO_URL = 'mongodb://mongo:27017/'
 ELASTIC_URL = 'http://elastic:9200'
@@ -48,6 +49,7 @@ class Elastic:
                 time.sleep(5)
 
         self.add_user_mapping()
+        self.add_attachment_pipeline()
 
     def add_all(self, index, doc_type, docs):
         if self.client.indices.exists(index=index) and not self.is_new:
@@ -80,7 +82,24 @@ class Elastic:
         res = self.client.indices.create(index='stabilty_users', ignore=400, body=mapping)
         self.is_new = 'error' not in res
 
-mongo = Mongo('stability')
+    def add_attachment_pipeline(self):
+        pipeline = {
+            "description" : "Extract attachment information encoded in Base64 with UTF-8 charset",
+            "processors" : [
+                {
+                    "attachment" : {
+                        "field" : "attachment"
+                    }
+                }
+            ]
+        }
+
+        ingest_client = IngestClient(self.client)
+        if self.is_new:
+            ingest_client.put_pipeline('attachment', pipeline)
+
+
+mongo = Mongo('stabilty')
 elastic = Elastic()
 
 #

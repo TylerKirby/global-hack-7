@@ -3,30 +3,38 @@ version: "3"
 services:
   mongo:
     image: mongo:4
+    container_name: stabilty_mongo
     ports:
       - "27017:27017"
     volumes:
-      - .vols/mongo:/data/db
+      - mongo-db:/data/db
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    build: data/elastic
+    container_name: stabilty_elastic
     ports:
       - 9200:9200
     environment:
       - discovery.type=single-node
+    volumes:
+      - elastic-db:/usr/share/elasticsearch/data
   data:
     build: data
+    container_name: stabilty_data
     links:
       - "mongo"
       - "elastic"
   keycloak:
     image: jboss/keycloak
+    container_name: stabilty_keycloak
     ports:
       - "8081:8080"
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
       - KEYCLOAK_IMPORT=/tmp/stabilty-realm.json
+      - DB_VENDOR=h2
     volumes:
       - ./config/stabilty-realm.json:/tmp/stabilty-realm.json
 volumes:
-  mongo-data:
+  mongo-db:
+  elastic-db:

@@ -3,27 +3,11 @@ const { RESTDataSource } = require('apollo-datasource-rest');
  class EmploymentAPI extends RESTDataSource {
   constructor() {
     super();
-    this.baseURL = 'https://movies-api.example.com/';
+    this.baseURL = 'http://localhost:9200/';
   }
 
-  willSendRequest(request) {
-    request.headers.set('Authorization', this.context.token);
-  }
-
-  async getOpportuntitiesForId(id) {
-    console.log(id);
-    return Promise.resolve({
-      title: "aoeu",
-    });
-    // return this.get(`movies/${id}`);
-  }
-
-  async getMostViewedMovies(limit = 10) {
-    const data = await this.get('movies', {
-      per_page: limit,
-      order_by: 'most_viewed',
-    });
-    return data.results;
+  async getEmploymentOpportuntitiesForId(id) {
+    return this.get(`stabilty_orgs/orgs/_search?q=${id}`).then(result=>result.hits.hits);
   }
 }
 
