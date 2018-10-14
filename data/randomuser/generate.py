@@ -1,6 +1,7 @@
 """ Use randomuser.me to generate random profile data. Also generate country data.
 """
 import json, requests, random
+from random_word import RandomWords
 
 size = 1000
 
@@ -17,11 +18,27 @@ country_dist = {
     'africa': 0.094
 }
 
-europe_countries = ['CH', 'DE', 'DK', 'ES', 'FI', 'FR', 'GB', 'IE', 'NL']
+europe_countries = ['DE', 'DK', 'ES', 'FI', 'FR', 'GB', 'IE', 'NL']
 
 default_cc = 'TR'
 
 country_regions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']
+
+ethnicity_map = {
+    'IR': 'Persian',
+    'BR': 'Branco',
+    'TR': 'Turk',
+    'DE': 'Germanic',
+    'DK': 'Dane',
+    'ES': 'Basque',
+    'FI': 'Finn',
+    'FR': 'French',
+    'GB': 'White',
+    'IE': 'Irish',
+    'NL': 'Dutch'
+}
+
+r = RandomWords()
 
 countries = []
 for region in country_regions:
@@ -49,7 +66,21 @@ for doc in range(size):
     res = requests.get('%s?nat=%s' % (random_user_api, cc.lower()))
     user = json.loads(res.text)['results'][0]
     user['location']['country'] = country_lut[cc]['name']
-    users.append(user)
+
+    skills = r.get_random_words(limit=random.randint(1, 10))
+    skills = [{'name': skill, 'proficiency': ['beginner', 'intermediate', 'advanced'][random.randint(0, 2)]} for skill in skills]
+
+    user2 = {
+        'firstName': user['name']['first'],
+        'lastName': user['name']['last'],
+        'phoneNumber': user['phone'],
+        'email': user['email'],
+        'ethnicity': ethnicity_map[cc],
+        'country': user['location']['country'],
+        'skills': skills
+    }
+
+    users.append(user2)
 
 with open('users.json', 'w') as fp:
     fp.write(json.dumps(users, indent=2))
