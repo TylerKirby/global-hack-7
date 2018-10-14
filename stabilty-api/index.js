@@ -2,6 +2,7 @@ const {ApolloServer, gql, MockList, AuthenticationError} = require('apollo-serve
 const {find, filter} = require('lodash');
 const {MoviesAPI} = require('./MoviesAPI');
 const {EmploymentAPI} = require('./EmploymentAPI');
+const {InstabiltiesAPI} = require('./InstabiltiesAPI');
 const fs = require('fs');
 const path = require('path');
 
@@ -227,7 +228,6 @@ const mocks = {
     skillOpportunityDetails: () => ({}),
     healthOpportunityDetails: () => ({}),
     communityOpportunityDetails: () => ({}),
-    allInstabilties: () => new MockList([24, 24]),
     stabilityOptionsForId: () => new MockList([4, 4]),
     countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
   }),
@@ -254,6 +254,12 @@ const resolvers = {
     countriesThatStartWith(root, {prefix}, context, info) {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
+    },
+    allInstabilties(root, args, {dataSources}) {
+      return dataSources.instabiltyAPI.getInstabilites().then(instabilites=> {
+        instabilites.forEach(instabilty => instabilty.id = instabilty._id);
+        return instabilites;
+      })
     },
     // employmentOpportunitiesForId(root, {id}, context, info){
     //   const prefixLowerCase = id.toLowerCase();
@@ -282,6 +288,7 @@ const server = new ApolloServer({
   dataSources: () => ({
     moviesAPI: new MoviesAPI(),
     employmentAPI: new EmploymentAPI(),
+    instabiltyAPI: new InstabiltiesAPI(),
   }),
   mocks,
   mockEntireSchema: false,
