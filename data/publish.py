@@ -80,7 +80,7 @@ class Elastic:
         res = self.client.indices.create(index='stabilty_users', ignore=400, body=mapping)
         self.is_new = 'error' not in res
 
-mongo = Mongo('stability')
+mongo = Mongo('stabilty')
 elastic = Elastic()
 
 #
