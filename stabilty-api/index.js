@@ -125,13 +125,13 @@ const typeDefs = gql`
     countryToId(country: String): String
     idToCountry(id: String): String
     
-    employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    employmentOpportunitiesForId(id: String): [EmploymentOpportunity]
     employmentOpportunityDetails(id: Int): EmploymentOpportunityDetails
-    skillOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    skillOpportunitiesForId(id: String): [EmploymentOpportunity]
     skillOpportunityDetails(id: Int): EmploymentOpportunityDetails
-    healthOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    healthOpportunitiesForId(id: String): [EmploymentOpportunity]
     healthOpportunityDetails(id: Int): EmploymentOpportunityDetails
-    communityOpportunitiesForId(id: Int): [EmploymentOpportunity]
+    communityOpportunitiesForId(id: String): [EmploymentOpportunity]
     communityOpportunityDetails(id: Int): EmploymentOpportunityDetails
     stabilityOptionsForId(id: Int): [StabilityOption]
     countriesThatStartWith(prefix: String): [Country]
@@ -140,7 +140,6 @@ const typeDefs = gql`
 
 const mocks = {
   Query: () => ({
-    employmentOpportunitiesForId: () => new MockList([0, 24]),
     skillOpportunitiesForId: () => new MockList([0, 24]),
     healthOpportunitiesForId: () => new MockList([0, 24]),
     communityOpportunitiesForId: () => new MockList([0, 24]),
@@ -170,6 +169,10 @@ const resolvers = {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
+    employmentOpportunitiesForId: (_, {id}, {dataSources}) =>
+        dataSources.employmentAPI.getEmploymentOpportuntitiesForId(decryptCountry(id))
+            .then(res =>
+                res.map(jobHit => jobHit._source)),
     countryToId(_, {country}) {
       return encryptCountry(country)
     },
