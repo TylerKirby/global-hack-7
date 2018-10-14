@@ -17,7 +17,7 @@ const CustomCard = ({
     </CardItem>
     <CardItem button onPress={() => onPress()}>
       <Body>
-        <Image source={{ uri:imageUri }} style={{ height: 200, width: '100%' }} />
+        <Image source={{ uri:'http://static.wixstatic.com/media/f93ecf_4d86286a76b8b001b66193738d05af99.jpg_1024' }} style={{ height: 200, width: '100%' }} />
         <Text>{description}</Text>
       </Body>
     </CardItem>

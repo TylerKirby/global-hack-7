@@ -8,7 +8,7 @@ import CustomCard from '../components/CustomCard';
 
 const GET_WORK_DATA = gql`
 query { 
-  employmentOpportunitiesForId(id: "U2FsdGVkX19TY+ELRrmm3bYPAu6V4634z4F0osFECEM=") {
+  employmentOpportunitiesForId(id: "U2FsdGVkX187bpz2ss67++slmWh8EEIDKj1wTYyO9Ks=") {
     name
     type
     description
