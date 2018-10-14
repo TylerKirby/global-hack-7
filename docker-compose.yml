@@ -8,7 +8,7 @@ services:
     volumes:
       - .vols/mongo:/data/db
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    build: data/elastic
     ports:
       - 9200:9200
     environment:
