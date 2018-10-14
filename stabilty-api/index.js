@@ -5,7 +5,17 @@ const {EmploymentAPI} = require('./EmploymentAPI');
 const {InstabiltiesAPI} = require('./InstabiltiesAPI');
 const fs = require('fs');
 const path = require('path');
-const saltedMD = require('salted-md5');
+const CryptoJS = require("crypto-js");
+
+const cipherString = '4a4fpfz5GqeRQbbRcC5ZQq@sUBPWVGTe';
+const encryptCountry =
+    country => CryptoJS.AES.encrypt(country, cipherString).toString()
+
+const decryptCountry =
+    stabilityId => {
+      var bytes = CryptoJS.AES.decrypt(stabilityId.toString(), cipherString);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    };
 
 const countryInformation = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../data/randomuser/countries.json'), 'utf8'));
 // This is a (sample) collection of books we'll be able to query
@@ -231,8 +241,6 @@ const mocks = {
     healthOpportunityDetails: () => ({}),
     communityOpportunityDetails: () => ({}),
     stabilityOptionsForId: () => new MockList([4, 4]),
-    countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt),
-    idToCountry: () => Math.round(Math.random()) ? 'turkey' : 'brazil'
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
@@ -260,11 +268,17 @@ const resolvers = {
       const prefixLowerCase = prefix.toLowerCase();
       return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
     },
+    countryToId(_, {country}) {
+      return encryptCountry(country)
+    },
+    idToCountry(_, {id}) {
+      return decryptCountry(id);
+    },
     allInstabilties(root, args, {dataSources}) {
       return dataSources.instabiltyAPI.getInstabilites().then(instabilites => {
         instabilites.forEach(instabilty => {
           instabilty.id = instabilty._id;
-          instabilty.stabilityId = saltedMD(instabilty.country, '4a4fpfz5GqeRQbbRcC5ZQq@sUBPWVGTe');
+          instabilty.stabilityId = encryptCountry(instabilty.country);
         });
         return instabilites;
       })
