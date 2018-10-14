@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Container, Button, Header, Icon, Card, Image } from 'semantic-ui-react';
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
+import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
+
 
 
 const client = new ApolloClient({
@@ -53,6 +55,7 @@ class Employment extends Component {
              {this.state.employmentResult.map(employment => {
                return( 
                  <div>
+                <NavLink to="/CardComponent">
                 <Card>
                 <Image>${employment.imageUrl}</Image>
                 <Card.Content>
@@ -66,6 +69,7 @@ class Employment extends Component {
                   </a>
                 </Card.Content>
                 </Card>
+                </NavLink>
                 <br/>
                 </div>
                )
