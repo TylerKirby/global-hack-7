@@ -135,69 +135,6 @@ class Community extends Component {
 
 export default Community;
     
-//       if (this.state.communityResult[0]) {
-//         if (this.state.one === true){
-
-        
-//         console.log('IN')
-//         return (
-          
-//           <div className="Community">
-//           <Container>
-//             <Header as='h2' icon textAlign='center'>
-//               <Icon name='address card outline' circular />
-//               <Header.Content>YOUR COMMUNITY</Header.Content>
-//             </Header>
-//             <div>
-//              {this.state.communityResult.map(communities => {
-//                return( 
-//                  <div>
-//                 <NavLink to="/CardComponent">
-//                 <Card onClick={this.setState({one: false, two: true})}>
-//                 <CardComponent communities={communities}/>
-//                 <Image>${communities.imageUrl}</Image>
-//                 <Card.Content>
-//                   <Card.Header>${communities.name}</Card.Header>
-//                   <Card.Description>${communities.description}</Card.Description>
-//                 </Card.Content>
-//                 <Card.Content extra>
-//                   <a>
-//                     <Icon name='user' />
-//                     Mentor
-//                   </a>
-//                 </Card.Content>
-//                 </Card>
-//                 </NavLink>
-//                 <br/>
-//                 {/* <Router>
-//                   <div>
-//                 <Route path='/CardComponent' render={(props) => <CardComponent {...props} communities={communities} />}/>
-//                 </div>
-//                 </Router> */}
-//                 </div>
-//                )  
-//              })}
-//             </div>
-//           </Container>
-//           </div>
-         
-//         );
-//     }
-// } else if (this.state.two === true){
-//       return (
-//         <div className='community'>
-//           <CardComponent communities={this.state.singleCommunityResult}/>
-//         </div>
-//       )
-//     } else {
-//       return (
-//         <div className='community'>
-//           <CardComponent communities={this.state.singleCommunityResult}/>
-//         </div>
-//       )
-//     }
-//     return null;
-  // }
   
 
 
