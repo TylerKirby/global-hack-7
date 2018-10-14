@@ -197,6 +197,7 @@ const typeDefs = gql`
     
     #ID in this case is the thing that we will use to build suggestions to customize the user experience 
     countryToId(country: String): String
+    idToCountry(id: String): String
     
     employmentOpportunitiesForId(id: Int): [EmploymentOpportunity]
     employmentOpportunityDetails(id: Int): EmploymentOpportunityDetails
@@ -229,7 +230,8 @@ const mocks = {
     healthOpportunityDetails: () => ({}),
     communityOpportunityDetails: () => ({}),
     stabilityOptionsForId: () => new MockList([4, 4]),
-    countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt)
+    countryToId: () => saltedMd5(`${Math.ceil(Math.random() * 100)}`, salt),
+    idToCountry: () => Math.round(Math.random()) ? 'turkey' : 'brazil'
   }),
   String: () => `I am a mocked data: ${Math.ceil(100 * Math.random())}`,
 };
