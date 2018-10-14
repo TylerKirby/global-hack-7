@@ -12,4 +12,4 @@ const TheUnstableSchema = new Schema({
   skills: [{}]
 });
 
-module.exports = mongoose.model('TheUnstable', TheUnstableSchema);
+module.exports = mongoose.model('User', TheUnstableSchema);
