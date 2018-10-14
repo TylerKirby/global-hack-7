@@ -26,6 +26,7 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
       - KEYCLOAK_IMPORT=/tmp/stabilty-realm.json
+      - DB_VENDOR=h2
     volumes:
       - ./config/stabilty-realm.json:/tmp/stabilty-realm.json
 volumes:
