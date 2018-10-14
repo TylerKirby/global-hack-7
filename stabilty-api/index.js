@@ -188,10 +188,6 @@ const resolvers = {
         return instabilites;
       })
     },
-    // employmentOpportunitiesForId(root, {id}, context, info){
-    //   const prefixLowerCase = id.toLowerCase();
-    //   return countryInformation.filter(country => country.name.toLowerCase().startsWith(prefixLowerCase))
-    // },
   },
 };
 
