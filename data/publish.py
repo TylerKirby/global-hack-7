@@ -105,7 +105,7 @@ elastic = Elastic()
 #
 # countries
 #
-#
+
 with open('randomuser/countries.json') as fp:
     countries = json.loads(fp.read())
     mongo.add_all('countries', copy.deepcopy(countries))
@@ -124,8 +124,17 @@ with open('randomuser/users.json') as fp:
 # orgs
 #
 
+with open('naa/avatar_links.json') as fp:
+    avatar_links = json.loads(fp.read())
+
+avatar_lut = dict([(link['name'], link) for link in avatar_links])
+
 with open('naa/orgs.json') as fp:
     orgs = json.loads(fp.read())
+    for org in orgs:
+        if org['name'] in avatar_lut:
+            org['avatar'] = avatar_lut[org['name']]
+
     mongo.add_all('orgs', copy.deepcopy(orgs))
     elastic.add_all('stabilty_orgs', 'orgs', orgs)
 
