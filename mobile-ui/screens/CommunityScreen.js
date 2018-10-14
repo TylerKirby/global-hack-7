@@ -6,11 +6,11 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import CustomCard from '../components/CustomCard';
-
+import CustomHeader from '../components/CustomHeader';
 
 const GET_COMMUNITY_DATA = gql`
 query { 
-  stabilityOptionsForId(id: 4) {
+  communityOpportunitiesForId(id: "U2FsdGVkX1/FJXXPo/viQ9NfCsE22SZpWpX2Td/FFeM=") {
     name
     type
     description
@@ -31,12 +31,10 @@ class CommunityScreen extends React.Component {
 
           return (
             <Container>
-              <Header>
-                <Text>Community</Text>
-              </Header>
+              <CustomHeader headerTitle="Community" />
               <Content>
                 {
-                  data.stabilityOptionsForId.map(e => (
+                  data.communityOpportunitiesForId.map(e => (
                     <CustomCard
                       key={e.name}
                       title={e.name}
