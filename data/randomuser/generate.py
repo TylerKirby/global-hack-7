@@ -3,7 +3,7 @@
 import json, requests, random
 from random_word import RandomWords
 
-size = 1000
+size = 100
 
 random_user_api = 'https://randomuser.me/api/'
 country_api = 'https://restcountries.eu/rest/v2/alpha'
