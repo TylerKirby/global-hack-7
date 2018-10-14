@@ -238,10 +238,10 @@ const mocks = {
 
 const resolvers = {
   Mutation: {
-    addAnUnstable: (_, {anUnstable}) => {
-      return dataSources.instabiltyAPI.createInstability(anUnstable).then(instabilites => {
-        instabilites.forEach(instabilty => instabilty.id = instabilty._id);
-        return instabilites;
+    addAnUnstable: (_, {anUnstable}, {dataSources}) => {
+      return dataSources.instabiltyAPI.createInstability(anUnstable).then(instabilty => {
+        instabilty.id = instabilty._id;
+        return instabilty;
       })
     },
     updateAnUnstable: (_, {anUnstable}) => anUnstable,

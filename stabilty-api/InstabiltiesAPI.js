@@ -15,7 +15,15 @@ const { RESTDataSource } = require('apollo-datasource-rest');
   }
 
   async createInstability(instabilty) {
-    return this.post('/api/instabilty', instabilty);
+    return this.post('/api/instabilty', JSON.stringify(instabilty), {
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+        .catch((err)=>{
+          console.log(err)
+          return instabilty;
+        });
   }
 }
 
